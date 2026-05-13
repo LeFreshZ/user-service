@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-indexes
+      author: your_name
+
+      changes:
+        - createIndex:
+            tableName: users
+            indexName: idx_users_email
+            unique: true
+
+            columns:
+              - column:
+                  name: email
+
+        - createIndex:
+            tableName: payment_cards
+            indexName: idx_payment_cards_user_id
+
+            columns:
+              - column:
+                  name: user_id
