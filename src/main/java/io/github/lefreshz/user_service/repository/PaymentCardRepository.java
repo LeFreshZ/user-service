@@ -14,15 +14,15 @@ import org.springframework.stereotype.Repository;
 public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long>,
     JpaSpecificationExecutor<PaymentCard> {
 
-  List<PaymentCard> findByUserId(Long userId);
+  List<PaymentCard> findByUser_UserId(Long userId);
 
-  Page<PaymentCard> findByUserId(Long userId, Pageable pageable);
+  Page<PaymentCard> findByUser_UserId(Long userId, Pageable pageable);
 
-  long countByUserId(Long userId);
+  long countByUser_UserId(Long userId);
 
   boolean existsByNumber(String number);
 
-  @Query("SELECT c FROM PaymentCard c WHERE c.is_active = true")
+  @Query("SELECT c FROM PaymentCard c WHERE c.active = true")
   Page<PaymentCard> findAllActiveCards(Pageable pageable);
 
   @Query(value = "SELECT * FROM payment_cards WHERE holder ILIKE CONCAT('%', :holder, '%')", nativeQuery = true)

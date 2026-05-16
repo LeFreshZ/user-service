@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentCardResponse {
+
   private Long cardId;
   private String number;
   private String holder;
