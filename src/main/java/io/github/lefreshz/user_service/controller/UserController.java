@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -97,7 +98,10 @@ public class UserController {
   }
 
   @GetMapping("/search/name")
-  public ResponseEntity<Page<UserResponse>> getUsersByName(@RequestParam String name, Pageable pageable) {
+  public ResponseEntity<Page<UserResponse>> getUsersByName(
+      @RequestParam String name,
+      Pageable pageable) {
+
     return ResponseEntity.ok(service.getAllUsersByName(name, pageable));
   }
 
@@ -120,6 +124,19 @@ public class UserController {
 
     try {
       response = service.getUserByEmail(email);
+    } catch (UserNotFoundException ex) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(response);
+  }
+
+  @PatchMapping("/{id}/active")
+  public ResponseEntity<UserResponse> changeActiveStatus(@PathVariable long id) {
+    UserResponse response;
+
+    try {
+      response = service.changeActiveStatus(id);
     } catch (UserNotFoundException ex) {
       return ResponseEntity.notFound().build();
     }

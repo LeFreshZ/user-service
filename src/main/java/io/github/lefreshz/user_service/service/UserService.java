@@ -1,8 +1,10 @@
 package io.github.lefreshz.user_service.service;
 
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
+import io.github.lefreshz.user_service.dto.PaymentCardResponse;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import io.github.lefreshz.user_service.dto.UserResponse;
+import io.github.lefreshz.user_service.entity.PaymentCard;
 import io.github.lefreshz.user_service.entity.User;
 import io.github.lefreshz.user_service.exception.UserAlreadyExistsException;
 import io.github.lefreshz.user_service.exception.UserNotFoundException;
@@ -86,6 +88,17 @@ public class UserService {
     User user = getUser(id);
 
     repository.delete(user);
+  }
+
+  @Transactional
+  public UserResponse changeActiveStatus(long id) {
+    User user = getUser(id);
+
+    user.setActive(!user.getActive());
+
+    User savedUser = repository.save(user);
+
+    return mapper.toResponse(savedUser);
   }
 
   private User getUser(long id) {

@@ -27,7 +27,7 @@ public class PaymentCard extends BaseEntity {
   @Column(name = "card_id")
   private Long cardId;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String number;
 
   @Column(nullable = false)

@@ -6,6 +6,7 @@ import io.github.lefreshz.user_service.dto.UpdatePaymentCardRequest;
 import io.github.lefreshz.user_service.entity.PaymentCard;
 import io.github.lefreshz.user_service.entity.User;
 import io.github.lefreshz.user_service.exception.CardLimitExceededException;
+import io.github.lefreshz.user_service.exception.PaymentCardAlreadyExistsException;
 import io.github.lefreshz.user_service.exception.PaymentCardNotFoundException;
 import io.github.lefreshz.user_service.exception.UserNotFoundException;
 import io.github.lefreshz.user_service.mapper.PaymentCardMapper;
@@ -29,6 +30,10 @@ public class PaymentCardService {
   private final UserRepository userRepository;
 
   public PaymentCardResponse createCard(CreatePaymentCardRequest request) {
+    if (paymentCardRepository.existsByNumber(request.getNumber())) {
+      throw new PaymentCardAlreadyExistsException("Payment card already exists with number: " + request.getNumber());
+    }
+
     Optional<User> optionalUser = userRepository.findById(request.getUserId());
 
     if (optionalUser.isEmpty()) {
@@ -50,6 +55,14 @@ public class PaymentCardService {
     return mapper.toResponse(savedCard);
   }
 
+  public Page<PaymentCardResponse> getActiveCards(Pageable pageable) {
+    return paymentCardRepository.findAllActiveCards(pageable).map(mapper::toResponse);
+  }
+
+  public Page<PaymentCardResponse> getAllCardsByHolder(String holder, Pageable pageable) {
+    return paymentCardRepository.searchByHolderNative(holder, pageable).map(mapper::toResponse);
+  }
+
   public PaymentCardResponse getCardById(long id) {
     return mapper.toResponse(getPaymentCard(id));
   }
@@ -59,15 +72,6 @@ public class PaymentCardService {
     Page<PaymentCard> cardPage = paymentCardRepository.findAll(specification, pageable);
 
     return cardPage.map(mapper::toResponse);
-  }
-
-  public List<PaymentCardResponse> getCardsByUserId(long userId) {
-    if (!userRepository.existsById(userId)) {
-      throw new UserNotFoundException("Can not find user with userId = " + userId);
-    }
-
-    return paymentCardRepository.findByUser_UserId(userId).stream().map(mapper::toResponse)
-        .toList();
   }
 
   public Page<PaymentCardResponse> getCardsByUserId(long userId, Pageable pageable) {
@@ -90,7 +94,14 @@ public class PaymentCardService {
   }
 
   @Transactional
-  public PaymentCardResponse changeCardStatus(long id) {
+  public void deleteCard(long id) {
+    PaymentCard card = getPaymentCard(id);
+
+    paymentCardRepository.delete(card);
+  }
+
+  @Transactional
+  public PaymentCardResponse changeActiveStatus(long id) {
     PaymentCard card = getPaymentCard(id);
 
     card.setActive(!card.getActive());
@@ -98,13 +109,6 @@ public class PaymentCardService {
     PaymentCard savedCard = paymentCardRepository.save(card);
 
     return mapper.toResponse(savedCard);
-  }
-
-  @Transactional
-  public void deleteCard(long id) {
-    PaymentCard card = getPaymentCard(id);
-
-    paymentCardRepository.delete(card);
   }
 
   private PaymentCard getPaymentCard(long id) {
