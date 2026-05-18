@@ -1,13 +1,15 @@
 package io.github.lefreshz.user_service.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserResponse {
+public class UserResponse implements Serializable {
 
   private Long userId;
   private String name;
@@ -17,4 +19,5 @@ public class UserResponse {
   private Boolean active;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+  private List<PaymentCardResponse> paymentCards;
 }

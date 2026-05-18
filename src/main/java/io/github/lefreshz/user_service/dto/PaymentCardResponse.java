@@ -1,5 +1,6 @@
 package io.github.lefreshz.user_service.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaymentCardResponse {
+public class PaymentCardResponse implements Serializable {
 
   private Long cardId;
   private String number;
