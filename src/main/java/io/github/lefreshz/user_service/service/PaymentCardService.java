@@ -12,9 +12,11 @@ import io.github.lefreshz.user_service.exception.UserNotFoundException;
 import io.github.lefreshz.user_service.mapper.PaymentCardMapper;
 import io.github.lefreshz.user_service.repository.PaymentCardRepository;
 import io.github.lefreshz.user_service.repository.UserRepository;
-import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +30,9 @@ public class PaymentCardService {
   private final PaymentCardMapper mapper;
   private final PaymentCardRepository paymentCardRepository;
   private final UserRepository userRepository;
+  private final CacheManager cacheManager;
 
+  @CacheEvict(value = "users", key = "#request.userId")
   public PaymentCardResponse createCard(CreatePaymentCardRequest request) {
     if (paymentCardRepository.existsByNumber(request.getNumber())) {
       throw new PaymentCardAlreadyExistsException("Payment card already exists with number: " + request.getNumber());
@@ -90,6 +94,8 @@ public class PaymentCardService {
 
     PaymentCard savedCard = paymentCardRepository.save(card);
 
+    evictCache(savedCard.getUser().getUserId());
+
     return mapper.toResponse(savedCard);
   }
 
@@ -98,6 +104,8 @@ public class PaymentCardService {
     PaymentCard card = getPaymentCard(id);
 
     paymentCardRepository.delete(card);
+
+    evictCache(card.getUser().getUserId());
   }
 
   @Transactional
@@ -107,6 +115,8 @@ public class PaymentCardService {
     card.setActive(!card.getActive());
 
     PaymentCard savedCard = paymentCardRepository.save(card);
+
+    evictCache(savedCard.getUser().getUserId());
 
     return mapper.toResponse(savedCard);
   }
@@ -119,5 +129,13 @@ public class PaymentCardService {
     }
 
     return optionalCard.get();
+  }
+
+  private void evictCache(long id) {
+    Cache userCache = cacheManager.getCache("users");
+
+    if (userCache != null) {
+      userCache.evict(id);
+    }
   }
 }

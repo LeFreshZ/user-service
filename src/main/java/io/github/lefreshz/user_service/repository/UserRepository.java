@@ -24,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
   @Query(value = "SELECT * FROM users WHERE surname ILIKE CONCAT('%', :surname, '%')", nativeQuery = true)
   Page<User> searchBySurnameNative(@Param("surname") String surname, Pageable pageable);
+
+  @Query("SELECT u FROM User u LEFT JOIN FETCH u.paymentCards WHERE u.userId = :id")
+  Optional<User> findByIdWithCards(@Param("id") long id);
 }

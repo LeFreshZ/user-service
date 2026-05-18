@@ -2,6 +2,7 @@ package io.github.lefreshz.user_service.dto;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -18,6 +19,6 @@ public class CreatePaymentCardRequest {
   private String holder;
   @Future
   private LocalDate expirationDate;
-  @NotBlank
+  @NotNull
   private Long userId;
 }

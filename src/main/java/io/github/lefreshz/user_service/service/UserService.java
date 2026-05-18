@@ -1,10 +1,8 @@
 package io.github.lefreshz.user_service.service;
 
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
-import io.github.lefreshz.user_service.dto.PaymentCardResponse;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import io.github.lefreshz.user_service.dto.UserResponse;
-import io.github.lefreshz.user_service.entity.PaymentCard;
 import io.github.lefreshz.user_service.entity.User;
 import io.github.lefreshz.user_service.exception.UserAlreadyExistsException;
 import io.github.lefreshz.user_service.exception.UserNotFoundException;
@@ -12,6 +10,9 @@ import io.github.lefreshz.user_service.mapper.UserMapper;
 import io.github.lefreshz.user_service.repository.UserRepository;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,6 +39,7 @@ public class UserService {
     return mapper.toResponse(savedUser);
   }
 
+  @Cacheable(value = "users", key = "#id")
   public UserResponse getUserById(long id) {
     return mapper.toResponse(getUser(id));
   }
@@ -72,6 +74,7 @@ public class UserService {
     return repository.searchBySurnameNative(surname, pageable).map(mapper::toResponse);
   }
 
+  @CachePut(value = "users", key = "#id")
   @Transactional
   public UserResponse updateUser(long id, UpdateUserRequest request) {
     User user = getUser(id);
@@ -83,6 +86,7 @@ public class UserService {
     return mapper.toResponse(savedUser);
   }
 
+  @CacheEvict(value = "users", key = "#id")
   @Transactional
   public void deleteUser(long id) {
     User user = getUser(id);
@@ -90,6 +94,7 @@ public class UserService {
     repository.delete(user);
   }
 
+  @CachePut(value = "users", key = "#id")
   @Transactional
   public UserResponse changeActiveStatus(long id) {
     User user = getUser(id);
@@ -102,7 +107,7 @@ public class UserService {
   }
 
   private User getUser(long id) {
-    Optional<User> optionalUser = repository.findById(id);
+    Optional<User> optionalUser = repository.findByIdWithCards(id);
 
     if (optionalUser.isEmpty()) {
       throw new UserNotFoundException("Can not find user with userId: " + id);

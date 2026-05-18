@@ -67,3 +67,5 @@ databaseChangeLog:
             referencedColumnNames: user_id
 
             constraintName: fk_payment_cards_user
+
+            onDelete: CASCADE

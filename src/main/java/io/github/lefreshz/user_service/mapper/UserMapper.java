@@ -7,7 +7,10 @@ import io.github.lefreshz.user_service.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    uses = PaymentCardMapper.class
+)
 public interface UserMapper {
 
   User toEntity(CreateUserRequest request);
