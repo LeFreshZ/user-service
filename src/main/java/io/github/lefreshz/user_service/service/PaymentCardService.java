@@ -35,7 +35,8 @@ public class PaymentCardService {
   @CacheEvict(value = "users", key = "#request.userId")
   public PaymentCardResponse createCard(CreatePaymentCardRequest request) {
     if (paymentCardRepository.existsByNumber(request.getNumber())) {
-      throw new PaymentCardAlreadyExistsException("Payment card already exists with number: " + request.getNumber());
+      throw new PaymentCardAlreadyExistsException(
+          "Payment card already exists with number: " + request.getNumber());
     }
 
     Optional<User> optionalUser = userRepository.findById(request.getUserId());
