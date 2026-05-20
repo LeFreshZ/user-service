@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lefreshz.user_service.dto.CreatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
-import io.github.lefreshz.user_service.dto.UpdatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;

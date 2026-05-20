@@ -59,6 +59,7 @@ public class PaymentCardController {
   public ResponseEntity<Page<PaymentCardResponse>> getCardsByHolder(
       @RequestParam String holder,
       Pageable pageable) {
+
     return ResponseEntity.ok(service.getAllCardsByHolder(holder, pageable));
   }
 
@@ -79,6 +80,7 @@ public class PaymentCardController {
   public ResponseEntity<Page<PaymentCardResponse>> getCardsByUserId(
       @PathVariable long userId,
       Pageable pageable) {
+
     Page<PaymentCardResponse> responses;
 
     try {
