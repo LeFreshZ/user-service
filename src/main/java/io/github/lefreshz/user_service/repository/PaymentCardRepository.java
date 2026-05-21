@@ -1,7 +1,6 @@
 package io.github.lefreshz.user_service.repository;
 
 import io.github.lefreshz.user_service.entity.PaymentCard;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

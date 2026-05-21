@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import io.github.lefreshz.user_service.dto.UserResponse;
-import io.github.lefreshz.user_service.entity.PaymentCard;
 import io.github.lefreshz.user_service.entity.User;
 import io.github.lefreshz.user_service.exception.UserAlreadyExistsException;
 import io.github.lefreshz.user_service.exception.UserNotFoundException;
@@ -197,7 +196,7 @@ public class UserServiceTest {
     PageRequest pageable = PageRequest.of(0, 10);
     Page<User> users = new PageImpl<>(List.of(user));
 
-    when(repository.searchByName("Gupanov", pageable)).thenReturn(users);
+    when(repository.searchBySurnameNative("Gupanov", pageable)).thenReturn(users);
 
     Page<UserResponse> response = service.getAllUsersBySurname("Gupanov", pageable);
 

@@ -2,7 +2,6 @@ package io.github.lefreshz.user_service.integration;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 
 public class TestContainersConfig {
 
