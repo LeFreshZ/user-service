@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lefreshz.user_service.dto.CreatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
-import io.github.lefreshz.user_service.dto.UpdatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,25 +25,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public abstract class IntegrationTest {
 
-  @Container
-  static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(
-      "postgres:16-alpine")
-      .withDatabaseName("user_db")
-      .withUsername("user")
-      .withPassword("password");
-
-  @Container
-  static GenericContainer<?> redisContainer = new GenericContainer<>("redis:7.4-alpine")
-      .withExposedPorts(6379);
-
   @DynamicPropertySource
   static void setProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-    registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-    registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+    registry.add("spring.datasource.url", TestContainersConfig.POSTGRES::getJdbcUrl);
+    registry.add("spring.datasource.username", TestContainersConfig.POSTGRES::getUsername);
+    registry.add("spring.datasource.password", TestContainersConfig.POSTGRES::getPassword);
 
-    registry.add("spring.data.redis.host", redisContainer::getHost);
-    registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(6379));
+    registry.add("spring.data.redis.host", TestContainersConfig.REDIS::getHost);
+    registry.add("spring.data.redis.port", () -> TestContainersConfig.REDIS.getMappedPort(6379));
 
     registry.add("spring.cache.type", () -> "redis");
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
