@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.lefreshz.user_service.dto.CreatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
+import io.github.lefreshz.user_service.dto.UpdatePaymentCardRequest;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ public abstract class IntegrationTest {
   }
 
   @Autowired
-  private JdbcTemplate jdbcTemplate;
+  protected JdbcTemplate jdbcTemplate;
 
   @Autowired
   protected StringRedisTemplate redisTemplate;
@@ -97,6 +98,18 @@ public abstract class IntegrationTest {
     request.setSurname(surname);
     request.setBirthDate(birthDate);
     request.setEmail(email);
+
+    return mapper.writeValueAsString(request);
+  }
+
+  protected String updateCardRequest(
+      String holder,
+      LocalDate expirationDate) throws JsonProcessingException {
+
+    UpdatePaymentCardRequest request = new UpdatePaymentCardRequest();
+
+    request.setHolder(holder);
+    request.setExpirationDate(expirationDate);
 
     return mapper.writeValueAsString(request);
   }
