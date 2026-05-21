@@ -9,12 +9,14 @@ import static org.mockito.Mockito.when;
 import io.github.lefreshz.user_service.dto.CreateUserRequest;
 import io.github.lefreshz.user_service.dto.UpdateUserRequest;
 import io.github.lefreshz.user_service.dto.UserResponse;
+import io.github.lefreshz.user_service.entity.PaymentCard;
 import io.github.lefreshz.user_service.entity.User;
 import io.github.lefreshz.user_service.exception.UserAlreadyExistsException;
 import io.github.lefreshz.user_service.exception.UserNotFoundException;
 import io.github.lefreshz.user_service.mapper.UserMapper;
 import io.github.lefreshz.user_service.repository.UserRepository;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -126,5 +132,76 @@ public class UserServiceTest {
     when(repository.existsByEmail("thescaver@gmail.com")).thenReturn(true);
 
     assertThrows(UserAlreadyExistsException.class, () -> service.createUser(createRequest));
+  }
+
+  @Test
+  void shouldReturnUserByEmail() {
+    when(repository.findByEmail("thescaver@gmail.com")).thenReturn(Optional.of(user));
+
+    UserResponse response = service.getUserByEmail("thescaver@gmail.com");
+
+    assertEquals(1L, response.getUserId());
+    assertEquals("Andrey", response.getName());
+    assertEquals("thescaver@gmail.com", response.getEmail());
+  }
+
+  @Test
+  void shouldThrowWhenEmailNotFound() {
+    when(repository.findByEmail("test@gmail.com")).thenReturn(Optional.empty());
+
+    assertThrows(UserNotFoundException.class, () -> service.getUserByEmail("test@gmail.com"));
+  }
+
+  @Test
+  void shouldReturnAllUsersBySpecification() {
+    PageRequest pageable = PageRequest.of(0, 10);
+    Specification<User> specification = (root, query, cb) -> null;
+    Page<User> users = new PageImpl<>(List.of(user));
+
+    when(repository.findAll(specification, pageable)).thenReturn(users);
+
+    Page<UserResponse> response = service.getAllUsers(specification, pageable);
+
+    assertEquals(1, response.getTotalElements());
+    assertEquals("Andrey", response.getContent().get(0).getName());
+  }
+
+  @Test
+  void shouldReturnActiveUsers() {
+    PageRequest pageable = PageRequest.of(0, 10);
+    Page<User> users = new PageImpl<>(List.of(user));
+
+    when(repository.findByActiveTrue(pageable)).thenReturn(users);
+
+    Page<UserResponse> response = service.getActiveUsers(pageable);
+
+    assertEquals(1, response.getTotalElements());
+    assertEquals(true, response.getContent().get(0).getActive());
+  }
+
+  @Test
+  void shouldReturnUsersByName() {
+    PageRequest pageable = PageRequest.of(0, 10);
+    Page<User> users = new PageImpl<>(List.of(user));
+
+    when(repository.searchByName("Andrey", pageable)).thenReturn(users);
+
+    Page<UserResponse> response = service.getAllUsersByName("Andrey", pageable);
+
+    assertEquals(1, response.getTotalElements());
+    assertEquals("Andrey", response.getContent().get(0).getName());
+  }
+
+  @Test
+  void shouldReturnUsersBySurname() {
+    PageRequest pageable = PageRequest.of(0, 10);
+    Page<User> users = new PageImpl<>(List.of(user));
+
+    when(repository.searchByName("Gupanov", pageable)).thenReturn(users);
+
+    Page<UserResponse> response = service.getAllUsersBySurname("Gupanov", pageable);
+
+    assertEquals(1, response.getTotalElements());
+    assertEquals("Gupanov", response.getContent().get(0).getSurname());
   }
 }
