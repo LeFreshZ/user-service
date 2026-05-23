@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 002-create-payment-cards-table
-      author: your_name
+      author: lefreshz
 
       changes:
         - createTable:

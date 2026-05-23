@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 003-create-indexes
-      author: your_name
+      author: lefreshz
 
       changes:
         - createIndex:
