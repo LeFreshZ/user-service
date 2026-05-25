@@ -7,7 +7,6 @@ databaseChangeLog:
         - createIndex:
             tableName: users
             indexName: idx_users_email
-            unique: true
 
             columns:
               - column:

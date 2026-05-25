@@ -1,0 +1,21 @@
+package com.innowise.userservice.dto;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class PaymentCardResponse implements Serializable {
+
+  private Long cardId;
+  private String number;
+  private String holder;
+  private LocalDate expirationDate;
+  private Boolean active;
+  private Long userId;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+}
