@@ -5,6 +5,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class PaymentCardSpecification {
 
+  private PaymentCardSpecification() { }
+
   public static Specification<PaymentCard> hasHolder(String holder) {
     return ((root, query, criteriaBuilder) ->
         holder == null ? null : criteriaBuilder.like(criteriaBuilder.lower(root.get("holder")),

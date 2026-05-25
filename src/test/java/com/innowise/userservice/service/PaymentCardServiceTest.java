@@ -35,7 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
-public class PaymentCardServiceTest {
+class PaymentCardServiceTest {
 
   @Mock
   private PaymentCardDao paymentCardDao;

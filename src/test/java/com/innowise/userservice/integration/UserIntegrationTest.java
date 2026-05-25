@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-public class UserIntegrationTest extends IntegrationTest {
+class UserIntegrationTest extends IntegrationTest {
 
   @Test
   void shouldCreateAndCacheUserThenReturnFromDb() throws Exception {

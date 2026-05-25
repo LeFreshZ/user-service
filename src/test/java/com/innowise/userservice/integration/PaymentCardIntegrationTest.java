@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-public class PaymentCardIntegrationTest extends IntegrationTest {
+class PaymentCardIntegrationTest extends IntegrationTest {
 
   @Test
   void shouldCreateCardAndEvictUser() throws Exception {

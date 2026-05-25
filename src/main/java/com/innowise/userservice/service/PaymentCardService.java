@@ -44,7 +44,6 @@ public interface PaymentCardService {
    *                                                                              #CARD_LIMIT}
    */
   @Transactional
-  @CacheEvict(value = "users", key = "#request.userId")
   PaymentCardResponse createCard(CreatePaymentCardRequest request);
 
   /**

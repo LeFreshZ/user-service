@@ -42,7 +42,6 @@ public interface UserService {
    * @throws com.innowise.userservice.exception.UserNotFoundException if no user with the given ID
    *                                                                  exists
    */
-  @Cacheable(value = "users", key = "#id")
   UserResponse getUserById(long id);
 
   /**
@@ -105,7 +104,6 @@ public interface UserService {
    *                                                                       provided email already
    *                                                                       exists
    */
-  @CachePut(value = "users", key = "#id")
   @Transactional
   UserResponse updateUser(long id, UpdateUserRequest request);
 
@@ -119,7 +117,6 @@ public interface UserService {
    * @throws com.innowise.userservice.exception.UserNotFoundException if no user with the given ID
    *                                                                  exists
    */
-  @CacheEvict(value = "users", key = "#id")
   @Transactional
   void deleteUser(long id);
 
@@ -135,7 +132,6 @@ public interface UserService {
    * @throws com.innowise.userservice.exception.UserNotFoundException if no user with the given ID
    *                                                                  exists
    */
-  @CachePut(value = "users", key = "#id")
   @Transactional
   UserResponse changeActiveStatus(long id, boolean active);
 }
