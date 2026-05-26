@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChangeActiveStatusRequest {
+
   @NotNull
   private Boolean active;
 }

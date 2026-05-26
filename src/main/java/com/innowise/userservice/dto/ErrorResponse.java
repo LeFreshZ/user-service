@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ErrorResponse {
+
   private LocalDateTime time;
   private int status;
   private String message;
