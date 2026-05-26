@@ -4,7 +4,6 @@ import com.innowise.userservice.dto.CreatePaymentCardRequest;
 import com.innowise.userservice.dto.PaymentCardResponse;
 import com.innowise.userservice.dto.UpdatePaymentCardRequest;
 import com.innowise.userservice.entity.PaymentCard;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

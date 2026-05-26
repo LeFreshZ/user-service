@@ -5,14 +5,6 @@ databaseChangeLog:
 
       changes:
         - createIndex:
-            tableName: users
-            indexName: idx_users_email
-
-            columns:
-              - column:
-                  name: email
-
-        - createIndex:
             tableName: payment_cards
             indexName: idx_payment_cards_user_id
 
