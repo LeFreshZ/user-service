@@ -1,5 +1,8 @@
 package com.innowise.userservice.integration;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innowise.userservice.dto.ChangeActiveStatusRequest;
@@ -17,6 +20,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
@@ -36,6 +41,11 @@ public abstract class IntegrationTest {
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
   }
 
+  protected MockMvc mvc;
+
+  @Autowired
+  private WebApplicationContext context;
+
   @Autowired
   protected JdbcTemplate jdbcTemplate;
 
@@ -43,13 +53,17 @@ public abstract class IntegrationTest {
   protected StringRedisTemplate redisTemplate;
 
   @Autowired
-  protected MockMvc mvc;
-
-  @Autowired
   protected ObjectMapper mapper;
 
   @BeforeEach
   void clean() {
+    mvc = MockMvcBuilders.webAppContextSetup(context)
+        .apply(springSecurity())
+            .defaultRequest(get("/")
+                .header("X-User-Id", "1")
+                .header("X-User-Role", "ROLE_ADMIN"))
+                .build();
+
     jdbcTemplate.execute("TRUNCATE TABLE payment_cards, users RESTART IDENTITY CASCADE");
     redisTemplate.delete(redisTemplate.keys("*"));
   }

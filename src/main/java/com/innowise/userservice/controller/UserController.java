@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,6 +33,7 @@ public class UserController {
   private final UserService service;
 
   @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
     UserResponse response = service.createUser(request);
 
@@ -39,6 +41,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN') or principal == #id")
   public ResponseEntity<UserResponse> getUserById(@PathVariable long id) {
     UserResponse response = service.getUserById(id);
 
@@ -46,6 +49,7 @@ public class UserController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> getAllUsers(
       @RequestParam(required = false) String name,
       @RequestParam(required = false) String surname,
@@ -58,6 +62,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN') or principal == #id")
   public ResponseEntity<UserResponse> updateUser(
       @PathVariable long id,
       @Valid @RequestBody UpdateUserRequest request) {
@@ -68,6 +73,7 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
     service.deleteUser(id);
 
@@ -75,6 +81,7 @@ public class UserController {
   }
 
   @GetMapping("/search/name")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> getUsersByName(
       @RequestParam String name,
       Pageable pageable) {
@@ -83,6 +90,7 @@ public class UserController {
   }
 
   @GetMapping("/search/surname")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> getUsersBySurname(
       @RequestParam String surname,
       Pageable pageable) {
@@ -91,11 +99,13 @@ public class UserController {
   }
 
   @GetMapping("/active")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<Page<UserResponse>> getActiveUsers(Pageable pageable) {
     return ResponseEntity.ok(service.getActiveUsers(pageable));
   }
 
   @GetMapping("/email")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<UserResponse> getUserByEmail(@RequestParam String email) {
     UserResponse response = service.getUserByEmail(email);
 
@@ -103,6 +113,7 @@ public class UserController {
   }
 
   @PatchMapping("/{id}/active")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<UserResponse> changeActiveStatus(
       @PathVariable long id,
       @Valid @RequestBody ChangeActiveStatusRequest request) {
