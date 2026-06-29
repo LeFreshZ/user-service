@@ -39,6 +39,8 @@ public abstract class IntegrationTest {
     registry.add("spring.data.redis.port", () -> TestContainersConfig.REDIS.getMappedPort(6379));
 
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
+
+    registry.add("internal.secret", () -> "testSecret");
   }
 
   protected MockMvc mvc;

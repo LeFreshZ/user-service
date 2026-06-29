@@ -33,7 +33,7 @@ public class UserController {
   private final UserService service;
 
   @PostMapping
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('INTERNAL')")
   public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
     UserResponse response = service.createUser(request);
 
@@ -73,7 +73,7 @@ public class UserController {
   }
 
   @DeleteMapping("/{id}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN') or hasRole('INTERNAL')")
   public ResponseEntity<Void> deleteUser(@PathVariable long id) {
     service.deleteUser(id);
 

@@ -42,6 +42,7 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
     ports:
       - "8080:8080"
 
