@@ -42,14 +42,19 @@ public class HeaderAuthFilter extends OncePerRequestFilter {
     String role = request.getHeader("X-User-Role");
 
     if (userId != null && role != null) {
-      UsernamePasswordAuthenticationToken authentication =
-          new UsernamePasswordAuthenticationToken(
-              Long.parseLong(userId),
-              null,
-              List.of(new SimpleGrantedAuthority(role))
-          );
+      try {
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(
+                Long.parseLong(userId),
+                null,
+                List.of(new SimpleGrantedAuthority(role))
+            );
 
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+      } catch (NumberFormatException ex) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        return;
+      }
     }
 
     filterChain.doFilter(request, response);
