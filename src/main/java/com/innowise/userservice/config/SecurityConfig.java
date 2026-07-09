@@ -23,7 +23,8 @@ public class SecurityConfig {
     security.csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session ->
             session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        .authorizeHttpRequests(auth -> auth.requestMatchers("/actuator/health/**").permitAll()
+            .anyRequest().authenticated())
         .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
     return security.build();
