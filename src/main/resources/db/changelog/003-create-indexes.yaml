@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-indexes
+      author: lefreshz
+
+      changes:
+        - createIndex:
+            tableName: payment_cards
+            indexName: idx_payment_cards_user_id
+
+            columns:
+              - column:
+                  name: user_id
